@@ -4,6 +4,8 @@ package com.example.demo.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
+
 @Builder
 @Entity
 @NoArgsConstructor
@@ -23,6 +25,7 @@ public class CarEntity {
 
     @Column(name = "model")
     private String model;
+
 
     @Column(name = "year")
     private int manufacturingYear;
