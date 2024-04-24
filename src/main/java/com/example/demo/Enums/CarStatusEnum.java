@@ -1,36 +1,35 @@
 package com.example.demo.Enums;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum BrandEnum {
+public enum CarStatusEnum {
 
-    MERCEDES ("mercedes"),
-    BMW ("bmw"),
-    AUDI ("audi"),
-    ALFA("alfa");
+    ON_ROAD("on_road"),
+    IN_REPAIR("in_repair"),
+    NOT_USED("not_used");
 
 
     private final String value;
 
-    BrandEnum(String value) {
+    CarStatusEnum(String value) {
         this.value = value;
     }
-
 
     @JsonValue
     public String getValue() {
         return value;
     }
 
+
     @Override
     public String toString() {
         return String.valueOf(value);
     }
 
-    public static BrandEnum fromValue(String value)
+
+    public static CarStatusEnum fromValue(String value)
     {
-        for (BrandEnum x : BrandEnum.values())
+        for (CarStatusEnum x: CarStatusEnum.values())
         {
             if (x.value.equals(value))
             {
