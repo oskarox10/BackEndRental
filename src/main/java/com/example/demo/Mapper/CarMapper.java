@@ -13,7 +13,7 @@ public interface CarMapper {
 
     @Mapping(target = "brand", source = "brand")
     @Mapping(target = "carStatus", source = "carStatus")
-    CarRegistrationResponse entityToResponse(CarRegistrationRequest carRegistrationRequest);
+    CarRegistrationResponse entityToResponse(CarEntity carEntity);
 
     @Mapping(target = "brand", source = "brand")
     @Mapping(target = "carStatus", source = "carStatus")

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CarRegistrationResponse {
 
-    private int carId;
+    private String carId;
     private BrandEnum brand;
     private String model;
     private int year;
