@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 public class CarRegistrationResponse {
 
     private String carId;
-    private BrandEnum brand;
+    private BrandEnum brandEnum;
     private String model;
-    private int year;
+    private int manufacturingYear;
     private CarStatusEnum carStatus;
 }

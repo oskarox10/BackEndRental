@@ -1,6 +1,8 @@
 package com.example.demo.Entity;
 
 
+import com.example.demo.Enums.BrandEnum;
+import com.example.demo.Enums.CarStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,17 +13,15 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ToString
 @Table(name ="car")
 public class CarEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private String id;
 
     @Column(name = "brand")
-    private String brand;
+    private BrandEnum brandEnum;
 
     @Column(name = "model")
     private String model;
@@ -31,6 +31,6 @@ public class CarEntity {
     private int manufacturingYear;
 
     @Column(name = "status")
-    private String carStatus;
+    private CarStatusEnum carStatus;
 
 }

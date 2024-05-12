@@ -11,11 +11,8 @@ public class PatternUtil {
 
     public static String generateId()
     {
-        String id = CAR_ID_PREFIX + UUID.randomUUID().toString();
-        if (!id.matches(UUID_REGEX)) {
-            throw new IllegalArgumentException("ID is wrong");
-        }
-        return id;
+        return CAR_ID_PREFIX + UUID.randomUUID().toString();
+
     }
 
 }

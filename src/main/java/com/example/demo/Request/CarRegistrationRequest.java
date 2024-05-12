@@ -20,7 +20,7 @@ public class CarRegistrationRequest {
 
     @NotNull(message = "year cannot be null")
     @ManufacturingYearRange
-    private int year;
+    private int manufacturingYear;
 
     @NotNull(message = "brand cannot be null")
     private BrandEnum brandEnum;

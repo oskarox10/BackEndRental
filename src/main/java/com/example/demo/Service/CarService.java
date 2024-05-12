@@ -1,5 +1,6 @@
 package com.example.demo.Service;
 
+import com.example.demo.Entity.CarEntity;
 import com.example.demo.Mapper.CarMapper;
 import com.example.demo.Repository.CarRepository;
 import com.example.demo.Request.CarRegistrationRequest;
@@ -7,6 +8,8 @@ import com.example.demo.Response.CarRegistrationResponse;
 import com.example.demo.Util.PatternUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,12 +41,22 @@ public class CarService {
     }
 
 
+
+    public List<CarEntity> getAllCars()
+    {
+        return  carRepository.findAll();
+    }
+
+
+
     public CarRegistrationResponse updateCarById(String carId, CarRegistrationRequest request)
     {
         var entity = carRepository.findById(carId)
                 .orElseThrow(() -> new IllegalArgumentException(carId));
 
         entity = carMapper.requestToUpdatedEntity(request, entity);
+
+
 
 
         entity = carRepository.save(entity);
