@@ -10,16 +10,19 @@ import com.example.demo.Response.CarRegistrationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.demo.Util.PatternUtil.CAR_ID_REGEX;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 
@@ -84,6 +87,32 @@ public class TestService {
     }
 
     @Test
+    void getCarById()
+    {
+        var entity = generateCarEntityStub();
+        var response = generateCarRegistrationResponseStub();
+
+        when(carRepository.findById(CAR_ID)).thenReturn(Optional.of(entity));
+        when(carMapper.entityToResponse(entity)).thenReturn(response);
+
+        var testResponse = carService.getCarById(CAR_ID);
+
+        verify(carRepository.findById(CAR_ID));
+        verify(carMapper.entityToResponse(entity));
+
+        assertThat(testResponse).usingRecursiveComparison().isEqualTo(response);
+
+    }
+
+    void getCarByIdShouldFailWhenCarNotRegistered()
+    {
+        when(carRepository.findById(CAR_ID)).thenReturn(Optional.empty());
+
+        assertThrows()
+    }
+
+
+    @Test
     void deleteAll()
     {
         doNothing().when(carRepository).deleteById(CAR_ID);
@@ -91,6 +120,30 @@ public class TestService {
         carService.deleteById(CAR_ID);
 
         verify(carRepository, times(1)).deleteById(CAR_ID);
+    }
+
+    @Test
+    void updateCarShouldSucceed()
+    {
+        var request = generateCarRegistrationRequestStub();
+        var response = generateCarRegistrationResponseStub();
+        var entity = generateCarEntityStub();
+
+        when(carRepository.findById(CAR_ID)).thenReturn(Optional.of(entity));
+        when(carMapper.requestToUpdatedEntity(request, entity)).thenReturn(entity);
+        when(carRepository.save(entity)).thenReturn(entity);
+        when(carMapper.entityToResponse(entity)).thenReturn(response);
+
+        var testResponse = carService.updateCarById(CAR_ID, request);
+
+        verify(carRepository).findById(CAR_ID);
+        verify(carMapper).requestToUpdatedEntity(request, entity);
+        verify(carRepository).save(entity);
+        verify(carMapper).entityToResponse(entity);
+
+        assertThat(testResponse).usingRecursiveComparison().isEqualTo(response);
+
+
     }
 
 
