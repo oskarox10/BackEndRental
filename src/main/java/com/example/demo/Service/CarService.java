@@ -6,6 +6,7 @@ import com.example.demo.Repository.CarRepository;
 import com.example.demo.Request.CarRegistrationRequest;
 import com.example.demo.Response.CarRegistrationResponse;
 import com.example.demo.Util.PatternUtil;
+import com.example.demo.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,7 @@ public class CarService {
     public CarRegistrationResponse getCarById(String carId)
     {
         var entity = carRepository.findById(carId)
-                .orElseThrow(() -> new IllegalArgumentException(carId));
+                .orElseThrow(() -> new NotFoundException(CAR_RESOURCE, carId));
 
         return carMapper.entityToResponse(entity);
     }
@@ -52,7 +53,7 @@ public class CarService {
     public CarRegistrationResponse updateCarById(String carId, CarRegistrationRequest request)
     {
         var entity = carRepository.findById(carId)
-                .orElseThrow(() -> new IllegalArgumentException(carId));
+                .orElseThrow(() -> new NotFoundException(CAR_RESOURCE, carId));
 
         entity = carMapper.requestToUpdatedEntity(request, entity);
 
@@ -66,6 +67,9 @@ public class CarService {
     public void deleteById(String carId) {
         if (carRepository.existsById(carId))
             carRepository.deleteById(carId);
+        else {
+            throw new NotFoundException(CAR_RESOURCE, carId);
+        }
     }
 
 }

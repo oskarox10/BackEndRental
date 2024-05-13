@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @Getter
-public class CarManagementApiException extends RuntimeException{
+public abstract class CarManagementApiException extends RuntimeException{
     private final HttpStatus httpStatus;
     private final ApiErrorResponse response;
 }

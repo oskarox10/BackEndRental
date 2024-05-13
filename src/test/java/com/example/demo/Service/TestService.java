@@ -7,10 +7,10 @@ import com.example.demo.Mapper.CarMapper;
 import com.example.demo.Repository.CarRepository;
 import com.example.demo.Request.CarRegistrationRequest;
 import com.example.demo.Response.CarRegistrationResponse;
+import com.example.demo.exception.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 
 import java.util.ArrayList;
@@ -21,8 +21,7 @@ import static com.example.demo.Util.PatternUtil.CAR_ID_REGEX;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
@@ -67,7 +66,7 @@ public class TestService {
 
         assertThat(carEntityCaptor.getValue()).isNotNull();
         assertThat(carEntityCaptor.getValue().getId()).containsPattern(CAR_ID_REGEX);
-        assertThat(testResponse).usingRecursiveComparison().isEqualTo(entity);
+        assertThat(testResponse).usingRecursiveComparison().isEqualTo(response);
     }
 
 
@@ -87,7 +86,7 @@ public class TestService {
     }
 
     @Test
-    void getCarById()
+    void getCarByIdShouldSucceed()
     {
         var entity = generateCarEntityStub();
         var response = generateCarRegistrationResponseStub();
@@ -97,29 +96,46 @@ public class TestService {
 
         var testResponse = carService.getCarById(CAR_ID);
 
-        verify(carRepository.findById(CAR_ID));
-        verify(carMapper.entityToResponse(entity));
+        verify(carRepository).findById(CAR_ID);
+        verify(carMapper).entityToResponse(entity);
 
         assertThat(testResponse).usingRecursiveComparison().isEqualTo(response);
-
     }
 
+
+
+    @Test
     void getCarByIdShouldFailWhenCarNotRegistered()
     {
         when(carRepository.findById(CAR_ID)).thenReturn(Optional.empty());
 
-        assertThrows()
+        assertThrows(NotFoundException.class, () -> carService.getCarById(CAR_ID));
+
+        verify(carRepository).findById(CAR_ID);
+        verifyNoInteractions(carMapper);
     }
 
 
     @Test
-    void deleteAll()
+    void deleteByIdShouldSucceed ()
     {
-        doNothing().when(carRepository).deleteById(CAR_ID);
+        when(carRepository.existsById(CAR_ID)).thenReturn(true);
 
-        carService.deleteById(CAR_ID);
+        assertDoesNotThrow( () -> carService.deleteById(CAR_ID));
 
-        verify(carRepository, times(1)).deleteById(CAR_ID);
+        verify(carRepository).existsById(CAR_ID);
+        verify(carRepository).deleteById(CAR_ID);
+    }
+
+    @Test
+    void deleteByIdShouldFail()
+    {
+        when(carRepository.existsById(CAR_ID)).thenReturn(false);
+
+        assertThrows(NotFoundException.class, () -> carService.deleteById(CAR_ID));
+
+        verify(carRepository).existsById(CAR_ID);
+        verifyNoMoreInteractions(carRepository);
     }
 
     @Test
@@ -142,7 +158,19 @@ public class TestService {
         verify(carMapper).entityToResponse(entity);
 
         assertThat(testResponse).usingRecursiveComparison().isEqualTo(response);
+    }
 
+
+    @Test
+    void updateCarShouldFail ()
+    {
+        when(carRepository.findById(CAR_ID)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> carService.updateCarById(CAR_ID, generateCarRegistrationRequestStub()));
+
+        verify(carRepository).findById(CAR_ID);
+        verifyNoMoreInteractions(carRepository);
+        verifyNoInteractions(carMapper);
 
     }
 
